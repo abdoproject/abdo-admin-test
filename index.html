@@ -169,6 +169,12 @@
             padding: 10px 20px;
             width: auto;
         }
+        .btn-pending {
+            background: #8e6fce;
+            padding: 10px 20px;
+            width: auto;
+        }
+        .btn-pending:hover { background: #7657b8; }
 
         /* ── Admin Layout ── */
         .admin-container {
@@ -179,7 +185,7 @@
             display: flex;
         }
 
-        /* ── Sidebar ── */
+        /* ── Sidebar (desktop & tablet/iPad: vertical, always visible) ── */
         .sidebar {
             width: 260px;
             background: var(--dark);
@@ -190,11 +196,6 @@
             bottom: 0;
             overflow-y: auto;
             z-index: 100;
-            transform: translateX(0);
-            transition: transform var(--transition);
-        }
-        .sidebar.hidden-mobile {
-            transform: translateX(100%);
         }
         .sidebar-header {
             padding: 20px;
@@ -223,43 +224,6 @@
         .nav-item:hover, .nav-item.active {
             background: rgba(255,255,255,0.1);
             border-right-color: var(--green);
-        }
-
-        /* ── Mobile Menu Toggle ── */
-        .menu-toggle {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 101;
-            background: var(--green);
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-        }
-
-        .menu-toggle.is-hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-        }
-
-        /* ── Overlay for mobile ── */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 99;
-        }
-        .sidebar-overlay.show {
-            display: block;
         }
 
         /* ── Main Content ── */
@@ -395,7 +359,6 @@
         .badge-cancelled { background: #f8d7da; color: #721c24; }
         .badge-not-confirmed { background: #ffe0b2; color: #e65100; }
         .badge-rejected { background: #ffcdd2; color: #b71c1c; }
-
         /* ── Forms ── */
         .form-grid {
             display: grid;
@@ -440,6 +403,8 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .modal.show { display: flex; }
         .modal-content {
@@ -448,7 +413,10 @@
             width: 100%;
             max-width: 600px;
             max-height: 90vh;
+            max-height: 90dvh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: auto;
         }
         .modal-header {
             padding: 20px;
@@ -480,24 +448,8 @@
             font-size: 13px;
         }
 
-        /* ── Mobile Responsive ── */
+        /* ── Tablet / iPad tweaks (sidebar stays vertical, just cosmetic spacing) ── */
         @media (max-width: 768px) {
-            .menu-toggle {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .sidebar {
-                width: 280px;
-                transform: translateX(100%);
-            }
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-right: 0;
-                padding: 80px 15px 15px;
-            }
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
@@ -514,9 +466,6 @@
             .data-table th, .data-table td {
                 padding: 8px;
             }
-            .top-bar {
-                margin-top: 60px;
-            }
             .top-bar h2 {
                 font-size: 18px;
             }
@@ -526,10 +475,74 @@
                 align-items: flex-start;
             }
         }
-        
+
         @media (min-width: 769px) and (max-width: 1024px) {
             .stats-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ── Phone only: sidebar becomes a horizontal scrollable bar at the top,
+               sitting right above the refresh/logout bar ── */
+        @media (max-width: 640px) {
+            .admin-container.logged-in {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: auto;
+                width: 100%;
+                height: 56px;
+                overflow: hidden;
+                box-shadow: var(--shadow-md);
+            }
+            .sidebar-header {
+                display: none;
+            }
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                height: 100%;
+                padding: 0 10px;
+                gap: 4px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .nav-menu::-webkit-scrollbar {
+                display: none;
+            }
+            .nav-item {
+                flex: 0 0 auto;
+                padding: 8px 12px;
+                border-right: none;
+                border-bottom: 3px solid transparent;
+                border-radius: var(--radius-sm);
+                font-size: 12.5px;
+                white-space: nowrap;
+            }
+            .nav-item:hover, .nav-item.active {
+                border-right-color: transparent;
+                border-bottom-color: var(--green);
+                background: rgba(255,255,255,0.12);
+            }
+            .main-content {
+                margin-right: 0;
+                padding: 70px 12px 15px;
+            }
+            .modal {
+                align-items: flex-start;
+                padding: 64px 10px 10px;
+            }
+            .modal-content {
+                max-height: calc(100vh - 74px);
+                max-height: calc(100dvh - 74px);
+            }
+            .col-hide-mobile {
+                display: none;
             }
         }
 
@@ -572,10 +585,6 @@
     </div>
 </div>
 
-<!-- ── Mobile Menu Toggle ── -->
-<button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()">☰</button>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
 <!-- ── Admin Container ── -->
 <div class="admin-container" id="admin-container">
     <!-- Sidebar -->
@@ -599,9 +608,6 @@
             </div>
             <div class="nav-item" onclick="showSection('paks')">
                 <span>🎁</span> الباقات
-            </div>
-            <div class="nav-item" onclick="logout()">
-                <span>🚪</span> تسجيل الخروج
             </div>
         </nav>
     </aside>
@@ -696,9 +702,9 @@
                         <tr>
                             <th>كود الطلب</th>
                             <th>العميل</th>
-                            <th>الهاتف</th>
-                            <th>الإجمالي</th>
-                            <th>الحالة</th>
+                            <th class="col-hide-mobile">الهاتف</th>
+                            <th class="col-hide-mobile">الإجمالي</th>
+                            <th class="col-hide-mobile">الحالة</th>
                             <th>التاريخ</th>
                             <th>الإجراءات</th>
                         </tr>
@@ -909,6 +915,7 @@
         <div class="modal-body" id="order-details"></div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="downloadOrderPDF()" style="width: auto;">📄 تحميل PDF</button>
+            <button class="btn btn-pending" onclick="updateOrderStatus('pending')" style="width: auto;">⏳ قيد الانتظار</button>
             <button class="btn btn-warning" onclick="updateOrderStatus('not-confirmed')" style="width: auto;">⚠️ لم يتم التأكيد</button>
             <button class="btn btn-success" onclick="updateOrderStatus('confirmed')" style="width: auto;">✅ تأكيد</button>
             <button class="btn btn-info" onclick="updateOrderStatus('delivered')" style="width: auto;">📦 توصيل</button>
@@ -943,10 +950,20 @@
     let editingCategoryId = null;
     let editingPakId = null;
 
+    // Realtime orders listener + new-order sound state
+    let ordersListenerAttached = false;
+    let isInitialOrdersSnapshot = true;
+    let notificationAudioCtx = null;
+
     // Splash screen
     setTimeout(() => {
         document.getElementById('splash').classList.add('hidden');
     }, 2000);
+
+    // Fallback: unlock audio on first interaction (covers persisted/auto sessions
+    // where login() click never happens)
+    document.addEventListener('click', ensureAudioContext, { once: true });
+    document.addEventListener('touchstart', ensureAudioContext, { once: true });
 
     // Check auth state
     auth.onAuthStateChanged(user => {
@@ -959,6 +976,7 @@
 
     // Login with Firebase Auth
     function login() {
+        ensureAudioContext(); // unlock audio for notification sounds while we have a user gesture
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
         
@@ -974,14 +992,39 @@
         });
     }
 
-    // Sidebar toggle for mobile
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        const toggleBtn = document.getElementById('menu-toggle');
-        sidebar.classList.toggle('show');
-        overlay.classList.toggle('show');
-        toggleBtn.classList.toggle('is-hidden');
+    // ── New-order notification sound ──
+    function ensureAudioContext() {
+        if (!notificationAudioCtx) {
+            try {
+                notificationAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) { /* Web Audio not available */ }
+        }
+        if (notificationAudioCtx && notificationAudioCtx.state === 'suspended') {
+            notificationAudioCtx.resume().catch(() => {});
+        }
+        return notificationAudioCtx;
+    }
+
+    function playNewOrderSound() {
+        const ctx = ensureAudioContext();
+        if (!ctx) return;
+        try {
+            const playTone = (freq, start, duration) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0, ctx.currentTime + start);
+                gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + start + 0.02);
+                gain.gain.linearRampToValueAtTime(0, ctx.currentTime + start + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + start);
+                osc.stop(ctx.currentTime + start + duration + 0.05);
+            };
+            playTone(880, 0, 0.16);
+            playTone(1175, 0.18, 0.2);
+        } catch (e) { /* ignore playback errors */ }
     }
 
     // Navigation
@@ -1005,11 +1048,6 @@
             paks: 'الباقات'
         };
         document.getElementById('page-title').textContent = titles[section];
-        
-        // Close sidebar on mobile
-        if (window.innerWidth <= 768) {
-            toggleSidebar();
-        }
     }
 
     // Load all data
@@ -1047,12 +1085,32 @@
             .reduce((sum, order) => sum + parseFloat(order.total), 0);
     }
 
-    // Load Orders
-    async function loadOrders() {
-        const snapshot = await db.collection('orders').orderBy('date', 'desc').get();
-        orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderOrders();
-        renderRecentOrders();
+    // Load Orders — realtime listener so new orders show up instantly and
+    // trigger a notification sound, without needing a manual refresh.
+    function loadOrders() {
+        if (ordersListenerAttached) return Promise.resolve();
+        ordersListenerAttached = true;
+
+        return new Promise(resolve => {
+            db.collection('orders').orderBy('date', 'desc').onSnapshot(snapshot => {
+                orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Only alert for orders added AFTER the initial load (real "new" orders)
+                if (!isInitialOrdersSnapshot) {
+                    const hasNewOrder = snapshot.docChanges().some(change => change.type === 'added');
+                    if (hasNewOrder) playNewOrderSound();
+                }
+                isInitialOrdersSnapshot = false;
+
+                renderOrders();
+                renderRecentOrders();
+                updateStats();
+                resolve();
+            }, error => {
+                console.error('خطأ في تحميل الطلبات:', error);
+                resolve();
+            });
+        });
     }
 
     function renderOrders(list) {
@@ -1066,9 +1124,9 @@
             <tr>
                 <td><strong>${order.orderCode}</strong></td>
                 <td>${order.name}</td>
-                <td>${order.phone}</td>
-                <td>${order.total} درهم</td>
-                <td>
+                <td class="col-hide-mobile">${order.phone}</td>
+                <td class="col-hide-mobile">${order.total} درهم</td>
+                <td class="col-hide-mobile">
                     <select class="status-select badge-${order.status}" onchange="quickUpdateStatus('${order.id}', this.value)">
                         <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>⏳ قيد الانتظار</option>
                         <option value="not-confirmed" ${order.status === 'not-confirmed' ? 'selected' : ''}>⚠️ لم يتم التأكيد</option>
@@ -1254,9 +1312,11 @@
     // Modal functions
     function openModal(id) {
         document.getElementById(id).classList.add('show');
+        document.body.style.overflow = 'hidden';
     }
     function closeModal(id) {
         document.getElementById(id).classList.remove('show');
+        document.body.style.overflow = '';
         editingProductId = null;
         editingCategoryId = null;
         editingPakId = null;
@@ -1499,49 +1559,87 @@
         order.items.forEach((item, i) => {
             itemsRows += `
                 <tr style="background:${i % 2 === 0 ? '#fafafa' : '#ffffff'};">
-                    <td style="padding:10px 12px; text-align:right; border-bottom:1px solid #eee;">${item.name}</td>
-                    <td style="padding:10px 12px; text-align:center; border-bottom:1px solid #eee;">${item.qty}</td>
-                    <td style="padding:10px 12px; text-align:center; border-bottom:1px solid #eee;">${item.price} درهم</td>
-                    <td style="padding:10px 12px; text-align:center; border-bottom:1px solid #eee; font-weight:700;">${(item.qty * item.price).toFixed(2)} درهم</td>
+                    <td style="padding:11px 12px; text-align:center; border-bottom:1px solid #eee; color:#9aa39c; font-size:12px;">${i + 1}</td>
+                    <td style="padding:11px 12px; text-align:right; border-bottom:1px solid #eee;">${item.name}</td>
+                    <td style="padding:11px 12px; text-align:center; border-bottom:1px solid #eee;">${item.qty}</td>
+                    <td style="padding:11px 12px; text-align:center; border-bottom:1px solid #eee;">${item.price} درهم</td>
+                    <td style="padding:11px 12px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:#1a6b3a;">${(item.qty * item.price).toFixed(2)} درهم</td>
                 </tr>`;
         });
 
+        const statusColors = {
+            pending:        { bg: '#fff3cd', fg: '#856404' },
+            'not-confirmed':{ bg: '#ffe0b2', fg: '#e65100' },
+            confirmed:      { bg: '#d4edda', fg: '#155724' },
+            delivered:      { bg: '#d1ecf1', fg: '#0c5460' },
+            rejected:       { bg: '#ffcdd2', fg: '#b71c1c' },
+        };
+        const sc = statusColors[order.status] || { bg: '#eee', fg: '#555' };
+        const statusBadge = `<span style="background:${sc.bg}; color:${sc.fg}; padding:4px 14px; border-radius:50px; font-size:12px; font-weight:700; display:inline-block;">${getStatusText(order.status)}</span>`;
+        const generatedAt = new Date().toLocaleString('ar-MA', { dateStyle: 'medium', timeStyle: 'short' });
+
         const invoiceEl = document.createElement('div');
-        invoiceEl.style.cssText = 'position:fixed; top:-9999px; left:-9999px; width:700px; background:#fff; font-family:Tajawal,sans-serif; direction:rtl;';
+        invoiceEl.style.cssText = 'position:fixed; top:-9999px; left:-9999px; width:720px; background:#fff; font-family:Tajawal,sans-serif; direction:rtl;';
         invoiceEl.innerHTML = `
-            <div style="padding:35px;">
-                <div style="background:linear-gradient(135deg,#1a6b3a,#2a9d5c); padding:28px; border-radius:14px; text-align:center; margin-bottom:25px;">
-                    <div style="font-size:26px; font-weight:800; color:#fff;">🥦 abdo web</div>
-                    <div style="font-size:15px; color:rgba(255,255,255,.85); margin-top:6px;">فاتورة طلب</div>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:22px; font-size:14px; color:#1c2b1e;">
-                    <div style="line-height:1.9;">
-                        <p><strong>العميل:</strong> ${order.name}</p>
-                        <p><strong>الهاتف:</strong> ${order.phone}</p>
-                        <p><strong>العنوان:</strong> ${order.city} - ${order.address}</p>
+            <div style="padding:40px;">
+                <div style="height:6px; border-radius:6px; background:linear-gradient(90deg,#1a6b3a,#2a9d5c,#4bbe7f); margin-bottom:26px;"></div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
+                    <div>
+                        <div style="font-size:28px; font-weight:800; color:#1a6b3a;">🥦 abdo web</div>
+                        <div style="font-size:12px; color:#6b7c6e; margin-top:5px;">متجر الخضر والفواكه الطازجة</div>
                     </div>
-                    <div style="text-align:left; line-height:1.9;">
-                        <p><strong>كود الطلب:</strong> <span style="color:#2a9d5c; font-weight:800;">${order.orderCode}</span></p>
-                        <p><strong>التاريخ:</strong> ${order.date?.toDate().toLocaleDateString('ar-MA') || '-'}</p>
+                    <div style="text-align:center; background:linear-gradient(135deg,#1a6b3a,#2a9d5c); color:#fff; padding:12px 26px; border-radius:12px;">
+                        <div style="font-size:11px; opacity:.85;">فاتورة رقم</div>
+                        <div style="font-size:19px; font-weight:800; letter-spacing:1px; margin-top:2px;">${order.orderCode}</div>
                     </div>
                 </div>
-                <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:20px;">
+
+                <div style="display:flex; gap:16px; margin-bottom:26px;">
+                    <div style="flex:1; background:#f7f9f5; border:1px solid #dce8de; border-radius:12px; padding:16px 18px;">
+                        <div style="font-size:11px; color:#6b7c6e; font-weight:700; margin-bottom:10px;">بيانات العميل</div>
+                        <div style="font-size:13.5px; line-height:2;">
+                            <div>👤 ${order.name}</div>
+                            <div>📞 ${order.phone}</div>
+                            <div>📍 ${order.city} - ${order.address}</div>
+                        </div>
+                    </div>
+                    <div style="flex:1; background:#f7f9f5; border:1px solid #dce8de; border-radius:12px; padding:16px 18px;">
+                        <div style="font-size:11px; color:#6b7c6e; font-weight:700; margin-bottom:10px;">بيانات الطلب</div>
+                        <div style="font-size:13.5px; line-height:2;">
+                            <div>📅 ${order.date?.toDate().toLocaleDateString('ar-MA') || '-'}</div>
+                            <div>🛍️ ${order.items.length} منتجات</div>
+                            <div style="margin-top:4px;">${statusBadge}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:8px; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.06);">
                     <thead>
-                        <tr style="background:#f0f0f0;">
-                            <th style="padding:10px 12px; text-align:right;">المنتج</th>
-                            <th style="padding:10px 12px; text-align:center;">الكمية</th>
-                            <th style="padding:10px 12px; text-align:center;">السعر</th>
-                            <th style="padding:10px 12px; text-align:center;">المجموع</th>
+                        <tr style="background:linear-gradient(135deg,#1a6b3a,#2a9d5c);">
+                            <th style="padding:12px; text-align:center; color:#fff; font-size:12px; width:34px;">#</th>
+                            <th style="padding:12px; text-align:right; color:#fff; font-size:12px;">المنتج</th>
+                            <th style="padding:12px; text-align:center; color:#fff; font-size:12px;">الكمية</th>
+                            <th style="padding:12px; text-align:center; color:#fff; font-size:12px;">السعر</th>
+                            <th style="padding:12px; text-align:center; color:#fff; font-size:12px;">المجموع</th>
                         </tr>
                     </thead>
                     <tbody>${itemsRows}</tbody>
                 </table>
-                <div style="text-align:left; font-size:19px; font-weight:800; color:#2a9d5c; border-top:2px solid #2a9d5c; padding-top:15px;">
-                    الإجمالي: ${order.total} درهم
+
+                <div style="display:flex; justify-content:flex-end; margin-top:18px;">
+                    <div style="background:#f7f9f5; border:2px solid #2a9d5c; border-radius:12px; padding:14px 30px; min-width:230px; text-align:center;">
+                        <div style="font-size:12px; color:#6b7c6e; margin-bottom:4px;">الإجمالي المطلوب</div>
+                        <div style="font-size:25px; font-weight:800; color:#1a6b3a;">${order.total} درهم</div>
+                    </div>
                 </div>
-                <div style="text-align:center; margin-top:35px; font-size:11px; color:#999;">
-                    شكراً لثقتكم بنا - abdo web
+
+                <div style="margin-top:36px; padding-top:18px; border-top:1px dashed #dce8de; text-align:center;">
+                    <div style="font-size:14px; color:#1a6b3a; font-weight:700; margin-bottom:5px;">شكراً لثقتكم بنا 🌿</div>
+                    <div style="font-size:10px; color:#aaa;">abdo web &nbsp;•&nbsp; تم إصدار هذه الفاتورة في ${generatedAt}</div>
                 </div>
+
+                <div style="height:6px; border-radius:6px; background:linear-gradient(90deg,#4bbe7f,#2a9d5c,#1a6b3a); margin-top:18px;"></div>
             </div>
         `;
         document.body.appendChild(invoiceEl);
